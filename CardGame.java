@@ -38,6 +38,10 @@ public class CardGame {
 		return playerNumber;
 	}
 	
+	public static String getPackLocation() {
+		return packLocation;
+	}
+	
 	public static ArrayList<Integer> packCreation() {
 		ArrayList<Integer> cardValues = new ArrayList<Integer>();
 		int packSize = playerNumber * 8, maxValue = playerNumber * 2, denomination = 1;
@@ -66,8 +70,6 @@ public class CardGame {
 		// Creating the file to store the pack
 		try {
 			File packFile = new File(packLocation);
-			
-			// Ensuring that this the only file with this name
 			if(packFile.createNewFile()) {
 				System.out.printf("%n%s %s", "Pack was successfully stored in:", packLocation);
 			} else {
@@ -77,11 +79,9 @@ public class CardGame {
 			e.printStackTrace();
 		}
 		
-		// Writing the pack to the file to be stored 
 		try {
 			FileWriter fWriter = new FileWriter(packLocation);
 			
-			// Gets every value and converts it to String to make it readable in the file
 			for(int i = 0; i < pack.size(); i++) {
 				String value = Integer.toString(pack.get(i));
 				fWriter.write(value);
