@@ -19,6 +19,8 @@ class CardGameTest {
 		System.out.printf("%s%n%n", "=======SETUP TEST EXECUTED=======");
 		CardGame.setup();
 		Assertions.assertTrue(CardGame.getPlayerNumber() >= 2);
+		Assertions.assertNotNull(CardGame.getPackLocation());
+		Assertions.assertTrue(CardGame.getPackLocation().contains(".txt"));
 	}
 
 	@Test
