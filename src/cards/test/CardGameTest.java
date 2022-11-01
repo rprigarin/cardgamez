@@ -26,7 +26,7 @@ class CardGameTest {
 	@Test
 	@Tag("UnitTest")
 	void testPackCreation() {
-		System.out.printf("%n%n%s%n%n", "=======PACKCREATION TEST EXECUTED=======");
+		System.out.printf("%n%n%s%n%n", "=======PACK CREATION TEST EXECUTED=======");
 		CardGame.packCreation();
 		int verifySize = 8 * CardGame.getPlayerNumber();
 		Assertions.assertEquals(verifySize, CardGame.packCreation().size());
