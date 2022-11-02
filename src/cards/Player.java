@@ -3,7 +3,7 @@ package cards;
 // need to thread this later
 public class Player {
 
-	public CardDeck playerDeck;
+	protected CardDeck playerDeck;
 	private int denomination;
 	
 	public Player(int denomination) {
@@ -23,12 +23,18 @@ public class Player {
 	{
 		// need to edit this to consider denomination preference
 		playerDeck.addCard(dLeft.takeFirstCard());
+		playerDeck.sortDeckByPreference(denomination);
 		dRight.addCard(playerDeck.takeLastCard());
+	}
+	
+	public CardDeck getDeck()
+	{
+		return playerDeck;
 	}
 	
 	public String toString()
 	{
-		return "Player #" + denomination;
+		return "Player #" + denomination + ", " + "Hand " + playerDeck;
 	}
 
 }
