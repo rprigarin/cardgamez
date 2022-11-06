@@ -5,7 +5,12 @@ public class CardGame {
 	protected static int playerNumber = 0;
 	protected static String packLocation = "";
 	static Scanner input = new Scanner(System.in);
+	public static List<Player> playerList = new ArrayList<Player>();
+	public static List<CardDeck> deckList = new ArrayList<CardDeck>();
+	private static ArrayList<Integer> cardValues = new ArrayList<Integer>();
+	private static List<String> playerFiles = new ArrayList<String>();
 	
+	// take player input
 	public static void setup() {
 		
 		// Getting user input for number of players 
@@ -43,7 +48,6 @@ public class CardGame {
 	}
 	
 	public static ArrayList<Integer> packCreation() {
-		ArrayList<Integer> cardValues = new ArrayList<Integer>();
 		int packSize = playerNumber * 8, maxValue = playerNumber * 2, denomination = 1;
 		
 		// Generating and storing values of the cards in the packs 
@@ -61,7 +65,6 @@ public class CardGame {
 				System.out.println(cardValues.get(i)); 
 			}
 		}
-		
 		return cardValues;
 	}
 	
@@ -95,15 +98,97 @@ public class CardGame {
 			e.printStackTrace();
 		}
 	}
+	
+	
+	public static void playerCreation() {
+		for(int i = 1; i <= CardGame.getPlayerNumber(); i++) {
+			playerList.add(new Player(i));
+		}
+	}
+	
+	public static void deckCreation() {
+		for(int i = 1; i <= CardGame.getPlayerNumber(); i++) {
+			deckList.add(new CardDeck());
+		}
+	}
+	
+	public static void distributeCards()
+	{
+		if(cardValues.size() != 0) {
+			// distribute to players
+			for(int i = 0; i <= cardValues.size()/2; i++) {
+				playerList.get(i % playerNumber).getDeck().addCard(new Card(cardValues.get(i)));
+			}
+			
+			// distribute to decks
+			for(int i = cardValues.size()/2; i < cardValues.size(); i++) {
+				deckList.get(i % playerNumber).addCard(new Card(cardValues.get(i)));
+			}
+			
+		}
 
+	}
+	
+	private static void createPlayerFiles() {
+		
+		for(int i = 1; i <= playerNumber; i++) {
+			try {
+				File pFile = new File("player" + i  + "_output.txt");
+				if(pFile.createNewFile()) {
+					playerFiles.add(pFile.getName());
+					System.out.printf("%n%s %s%n", "File directory: ", pFile.getAbsolutePath());
+				} else {
+					System.out.println("File already exists. Contents being overwritten.");
+					playerFiles.add(pFile.getName());
+				}
+			} catch(IOException e) {
+				System.out.println("An error occured.");
+				e.printStackTrace();
+			}
+		}
+	}
+	
 
+	private static void writingToPlayerFile(String filename, Player player) {
+		try {
+			FileWriter fileWriter = new FileWriter(filename);
+			PrintWriter printWriter = new PrintWriter(fileWriter);
+			printWriter.printf("%s %s", "Initial", player.toString());
+		    printWriter.close();
+		} catch(IOException e) {
+			e.printStackTrace();
+			
+		}
+	}
 
 	public static void main(String[] args) {
-		// TODO Auto-generated method stub
+		// input; pack creation
 		CardGame.setup();
-		CardGame.packCreation();
 		CardGame.storingPack(CardGame.packCreation());
-
+		
+		// create of players and decks
+		CardGame.playerCreation();
+		CardGame.deckCreation();
+		
+		// fill decks with cards from pack
+		CardGame.distributeCards();
+		
+		for(int i = 0; i < playerList.size(); i++) {
+			System.out.printf("%n%s%n",playerList.get(i).toString());
+		}
+		
+		for(int i = 0; i < deckList.size(); i++) {
+			System.out.printf("%n%s %d %s%n","Deck", (i + 1), deckList.get(i).toString());
+		}
+		
+		// Creating player files and adding initial hands
+		CardGame.createPlayerFiles();
+		
+		 for(int i = 0; i < playerFiles.size(); i++){
+		 	CardGame.writingToPlayerFile(playerFiles.get(i), playerList.get(i));
+		 }
+		 
+		
 	}
 
 }
