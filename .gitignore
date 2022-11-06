@@ -1,3 +1,4 @@
-/.settings
-.classpath
-.project
+# exclude everything except src and bin
+/*
+!/src/
+!/bin/
