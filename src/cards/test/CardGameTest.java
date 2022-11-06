@@ -6,6 +6,7 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
+import java.io.File;
 
 class CardGameTest {
 	
@@ -72,6 +73,27 @@ class CardGameTest {
 		 
 	 }
 	 
+	 @Test
+	 @Order(6)
+	 @Tag("UnitTest")
+	 void testCreatePlayerFiles() {
+		System.out.printf("%n%n%s%n%n","=======PLAYER FILE CREATION TEST EXECUTED=======");
+		CardGame.createPlayerFiles();
+		Assertions.assertEquals(CardGame.getPlayerNumber(), CardGame.playerFiles.size());
+		for(String filename: CardGame.playerFiles) {
+			File test = new File(filename);
+			test.delete();
+		}
+	 }
+	 
+	 @Test
+	 @Order(1)
+	 @Tag("UnitTest")
+	 void testCreateDeckFiles() {
+		System.out.printf("%n%n%s%n%n","=======DECK FILE CREATION TEST EXECUTED=======");
+		CardGame.createDeckFiles();
+		Assertions.assertEquals(CardGame.getPlayerNumber(), CardGame.deckFiles.size());
+	 }
 	
 	
 	@AfterAll

@@ -8,7 +8,8 @@ public class CardGame {
 	public static List<Player> playerList = new ArrayList<Player>();
 	public static List<CardDeck> deckList = new ArrayList<CardDeck>();
 	private static ArrayList<Integer> cardValues = new ArrayList<Integer>();
-	private static List<String> playerFiles = new ArrayList<String>();
+	public static List<String> playerFiles = new ArrayList<String>();
+	public static List<String> deckFiles = new ArrayList<String>();
 	
 	// take player input
 	public static void setup() {
@@ -84,7 +85,6 @@ public class CardGame {
 		
 		try {
 			FileWriter fWriter = new FileWriter(packLocation);
-			
 			for(int i = 0; i < pack.size(); i++) {
 				String value = Integer.toString(pack.get(i));
 				fWriter.write(value);
@@ -129,11 +129,17 @@ public class CardGame {
 
 	}
 	
-	private static void createPlayerFiles() {
+	protected static String outputFolder() {
+		String directory = "./output_files/";
+		new File(directory).mkdirs();	
+		return directory;
+	}
+	
+	public static void createPlayerFiles() {
 		
 		for(int i = 1; i <= playerNumber; i++) {
 			try {
-				File pFile = new File("player" + i  + "_output.txt");
+				File pFile = new File(outputFolder() + "player" + i  + "_output.txt");
 				if(pFile.createNewFile()) {
 					playerFiles.add(pFile.getName());
 					System.out.printf("%n%s %s%n", "File directory: ", pFile.getAbsolutePath());
@@ -148,10 +154,12 @@ public class CardGame {
 		}
 	}
 	
+	
 
 	private static void writingToPlayerFile(String filename, Player player) {
 		try {
-			FileWriter fileWriter = new FileWriter(filename);
+			String dir = outputFolder() + filename;
+			FileWriter fileWriter = new FileWriter(dir);
 			PrintWriter printWriter = new PrintWriter(fileWriter);
 			printWriter.printf("%s %s", "Initial", player.toString());
 		    printWriter.close();
@@ -160,19 +168,53 @@ public class CardGame {
 			
 		}
 	}
+	
+	public static void createDeckFiles() {
+			
+			for(int i = 1; i <= playerNumber; i++) {
+				try {
+					File dFile = new File(outputFolder() + "deck" + i  + "_output.txt");
+					if(dFile.createNewFile()) {
+						deckFiles.add(dFile.getName());
+						System.out.printf("%n%s %s%n", "File directory: ", dFile.getAbsolutePath());
+					} else {
+						System.out.println("File already exists. Contents being overwritten.");
+						deckFiles.add(dFile.getName());
+					}
+				} catch(IOException e) {
+					System.out.println("An error occured.");
+					e.printStackTrace();
+				}
+			}
+		}
+	
+
+	private static void writingToDeckFile(String filename, CardDeck deck, int deckNum) {
+		try {
+			String dir = outputFolder() + filename;
+			FileWriter fileWriter = new FileWriter(dir);
+			PrintWriter printWriter = new PrintWriter(fileWriter);
+			printWriter.printf("%s %d %s %s", "Deck", (deckNum + 1), "contents:", deck.toString());
+		    printWriter.close();
+		} catch(IOException e) {
+			e.printStackTrace();	
+		}
+	}
 
 	public static void main(String[] args) {
 		// input; pack creation
-		CardGame.setup();
-		CardGame.storingPack(CardGame.packCreation());
+		setup();
+		storingPack(packCreation());
 		
 		// create of players and decks
-		CardGame.playerCreation();
-		CardGame.deckCreation();
+		playerCreation();
+		deckCreation();
 		
 		// fill decks with cards from pack
-		CardGame.distributeCards();
+		distributeCards();
 		
+		
+		// Remove from the final product. Not needed
 		for(int i = 0; i < playerList.size(); i++) {
 			System.out.printf("%n%s%n",playerList.get(i).toString());
 		}
@@ -182,11 +224,17 @@ public class CardGame {
 		}
 		
 		// Creating player files and adding initial hands
-		CardGame.createPlayerFiles();
+		createPlayerFiles();
 		
-		 for(int i = 0; i < playerFiles.size(); i++){
-		 	CardGame.writingToPlayerFile(playerFiles.get(i), playerList.get(i));
+		 for(int i = 0; i < playerFiles.size(); i++) {
+		 	writingToPlayerFile(playerFiles.get(i), playerList.get(i));
 		 }
+		 
+		 CardGame.createDeckFiles();
+		 
+		 for(int i = 0; i < deckFiles.size(); i++) {
+			 writingToDeckFile(deckFiles.get(i), deckList.get(i), i);
+		}
 		 
 		
 	}
