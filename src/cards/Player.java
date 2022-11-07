@@ -1,7 +1,7 @@
 package cards;
 
 // need to thread this later
-public class Player {
+public class Player implements Runnable {
 
 	protected CardDeck playerDeck;
 	private int denomination;
@@ -19,7 +19,11 @@ public class Player {
 		return false;
 	}
 	
-	public void takeAndPutCards(CardDeck dLeft, CardDeck dRight)
+	public void run() {
+		// do stuff here
+	}
+	
+	public synchronized void takeAndPutCards(CardDeck dLeft, CardDeck dRight)
 	{
 		// need to edit this to consider denomination preference
 		playerDeck.addCard(dLeft.takeFirstCard());

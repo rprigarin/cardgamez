@@ -14,26 +14,83 @@ public class CardGame {
 	// take player input
 	public static void setup() {
 		
-		// Getting user input for number of players 
-		System.out.print("Please enter the number of players you would like: ");
-		playerNumber = input.nextInt();
+		String tempInput = "";
+		boolean validInput = false;
+		boolean validBoundary = false;
 		
-		/* Verification to ensure that there are two or more players.
-		 * Repeats until the user enters a valid number 
-		 */
-		while (!(playerNumber >= 2)) {
-			System.out.print("Minimum number of players is 2. Please enter a valid number: ");
-			playerNumber = input.nextInt();
+		// get the number of players
+		System.out.print("Please enter the number of players you would like: ");
+		tempInput = input.nextLine();
+		while(!validInput) {
+			try
+			{
+				playerNumber = Integer.parseInt(tempInput);
+				validInput = true;
+			} catch(NumberFormatException e)
+			{
+				//e.printStackTrace();
+				validInput = false;
+				System.out.print("Invalid input, please enter a number: ");
+				tempInput = input.nextLine();
+			}
+		}
+
+		if(validInput) {
+			if(playerNumber < 2 || playerNumber > 100) {
+				validBoundary = false;
+			}
+			
+			/* Verification to ensure that there are two or more players.
+			 * Repeats until the user enters a valid number 
+			 */
+			
+			while(!validBoundary) {
+				if(playerNumber < 2) {
+					System.out.println("Minimum number of players required is 2. Please enter a valid number: ");
+					playerNumber = input.nextInt();
+					continue;
+				} else if(playerNumber > 100) {
+					System.out.println("Maximum number of players is 100. Please enter a valid number: ");
+					playerNumber = input.nextInt();
+					continue;
+				}
+				validBoundary = true;
+			}
 		}
 		
 		// Gets the name of the file the user would like to store the pack in 
+		boolean invalidPL = true;
+		char[] illegalChars = {'\'', ':', '/', '<', '>', '?', '|'};
 		System.out.print("Please enter location of pack to load: ");
 		packLocation = input.next();
 		
 		/* Verification to ensure that the pack file is a plain text file.
 		 * Repeats until the user enters a valid location 
 		 */
-		while (!(packLocation.contains(".txt"))) {
+		while(invalidPL) {
+			char[] holder = packLocation.toCharArray();
+			for(char letter: holder) {
+				for(char illegal: illegalChars) {
+					// check for presence of illegal characters
+					if(letter == illegal) {
+						invalidPL = true;
+						break;
+					}
+				}
+				
+				// if found, prompt for input again then break from loop
+				if(invalidPL)
+				{
+					System.out.print("Invalid pack location, please try again: ");
+					packLocation = input.next();
+					break;
+				}
+	
+			}
+			invalidPL = false;
+		}
+		
+		while (!(packLocation.substring(packLocation.length() - 4, packLocation.length()).equals(".txt"))) {
 			System.out.print("Pack location must be a plaintext file ('.txt'). Please enter a valid pack location: ");
 			packLocation = input.next();
 		}
