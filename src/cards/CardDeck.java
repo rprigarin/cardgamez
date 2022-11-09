@@ -23,6 +23,11 @@ public class CardDeck {
 
 	}
 	
+	public Card getCard(int index)
+	{
+		return deck.get(index);
+	}
+	
 	public Card takeFirstCard()
 	{
 		// NOTE: need to add a check so as to not remove from empty array list

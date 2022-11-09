@@ -8,6 +8,7 @@ public class CardGame {
 	public static List<Player> playerList = new ArrayList<Player>();
 	public static List<CardDeck> deckList = new ArrayList<CardDeck>();
 	private static ArrayList<Integer> cardValues = new ArrayList<Integer>();
+	// take these out?
 	public static List<String> playerFiles = new ArrayList<String>();
 	public static List<String> deckFiles = new ArrayList<String>();
 	
@@ -59,39 +60,16 @@ public class CardGame {
 		}
 		
 		// Gets the name of the file the user would like to store the pack in 
-		boolean invalidPL = true;
-		char[] illegalChars = {'\'', ':', '/', '<', '>', '?', '|'};
 		System.out.print("Please enter location of pack to load: ");
 		packLocation = input.next();
 		
 		/* Verification to ensure that the pack file is a plain text file.
 		 * Repeats until the user enters a valid location 
 		 */
-		while(invalidPL) {
-			char[] holder = packLocation.toCharArray();
-			for(char letter: holder) {
-				for(char illegal: illegalChars) {
-					// check for presence of illegal characters
-					if(letter == illegal) {
-						invalidPL = true;
-						break;
-					}
-				}
-				
-				// if found, prompt for input again then break from loop
-				if(invalidPL)
-				{
-					System.out.print("Invalid pack location, please try again: ");
-					packLocation = input.next();
-					break;
-				}
-	
-			}
-			invalidPL = false;
-		}
-		
-		while (!(packLocation.substring(packLocation.length() - 4, packLocation.length()).equals(".txt"))) {
-			System.out.print("Pack location must be a plaintext file ('.txt'). Please enter a valid pack location: ");
+		while ((packLocation.length() < 4) || (!(packLocation.substring(packLocation.length() - 4,
+				packLocation.length()).equals(".txt"))) || (packLocation.contains("?")) || (packLocation.contains("|"))
+				|| (packLocation.contains("\"")) || (packLocation.contains(":")) || (packLocation.contains("/")) || (packLocation.contains("<")) || (packLocation.contains(">"))) {
+			System.out.print("Invalid pack location. Please enter a valid pack location: ");
 			packLocation = input.next();
 		}
 		input.close();
@@ -192,17 +170,29 @@ public class CardGame {
 		return directory;
 	}
 	
-	public static void createPlayerFiles() {
+	public static void createFiles() {
 		
 		for(int i = 1; i <= playerNumber; i++) {
 			try {
 				File pFile = new File(outputFolder() + "player" + i  + "_output.txt");
+				File dFile = new File(outputFolder() + "deck" + i + "_output.txt");
+				
+				// Creating player files and adding them to a list 
 				if(pFile.createNewFile()) {
 					playerFiles.add(pFile.getName());
 					System.out.printf("%n%s %s%n", "File directory: ", pFile.getAbsolutePath());
 				} else {
 					System.out.println("File already exists. Contents being overwritten.");
 					playerFiles.add(pFile.getName());
+				}
+				
+				// Creating deck files and adding them to a list 
+				if(dFile.createNewFile()) {
+					deckFiles.add(dFile.getName());
+					System.out.printf("%n%s %s%n", "File directory: ", dFile.getAbsolutePath());
+				} else {
+					System.out.println("File already exists. Contents being overwritten.");
+					deckFiles.add(dFile.getName());
 				}
 			} catch(IOException e) {
 				System.out.println("An error occured.");
@@ -225,25 +215,6 @@ public class CardGame {
 			
 		}
 	}
-	
-	public static void createDeckFiles() {
-			
-			for(int i = 1; i <= playerNumber; i++) {
-				try {
-					File dFile = new File(outputFolder() + "deck" + i  + "_output.txt");
-					if(dFile.createNewFile()) {
-						deckFiles.add(dFile.getName());
-						System.out.printf("%n%s %s%n", "File directory: ", dFile.getAbsolutePath());
-					} else {
-						System.out.println("File already exists. Contents being overwritten.");
-						deckFiles.add(dFile.getName());
-					}
-				} catch(IOException e) {
-					System.out.println("An error occured.");
-					e.printStackTrace();
-				}
-			}
-		}
 	
 
 	private static void writingToDeckFile(String filename, CardDeck deck, int deckNum) {
@@ -281,13 +252,11 @@ public class CardGame {
 		}
 		
 		// Creating player files and adding initial hands
-		createPlayerFiles();
+		createFiles();
 		
 		 for(int i = 0; i < playerFiles.size(); i++) {
 		 	writingToPlayerFile(playerFiles.get(i), playerList.get(i));
 		 }
-		 
-		 CardGame.createDeckFiles();
 		 
 		 for(int i = 0; i < deckFiles.size(); i++) {
 			 writingToDeckFile(deckFiles.get(i), deckList.get(i), i);
