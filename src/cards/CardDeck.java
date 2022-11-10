@@ -6,14 +6,14 @@ import java.util.Collections;
 public class CardDeck {
 	
 	private volatile ArrayList<Card> deck;
-	private final int SIZE = 4;
+	protected final int SIZE = 4;
 	
 	public CardDeck()
 	{
 		deck = new ArrayList<Card>();
 	}
 	
-	public void addCard(Card c)
+	public void loadDeck(Card c)
 	{	
 		// limit addition of cards to 4
 		if(deck.size() < SIZE)
@@ -21,6 +21,10 @@ public class CardDeck {
 			deck.add(c);
 		}
 
+	}
+	
+	public void addCard(Card c) {
+		deck.add(c);
 	}
 	
 	public Card getCard(int index)

@@ -152,12 +152,12 @@ public class CardGame {
 		if(cardValues.size() != 0) {
 			// distribute to players
 			for(int i = 0; i <= cardValues.size()/2; i++) {
-				playerList.get(i % playerNumber).getDeck().addCard(new Card(cardValues.get(i)));
+				playerList.get(i % playerNumber).getDeck().loadDeck(new Card(cardValues.get(i)));
 			}
 			
 			// distribute to decks
 			for(int i = cardValues.size()/2; i < cardValues.size(); i++) {
-				deckList.get(i % playerNumber).addCard(new Card(cardValues.get(i)));
+				deckList.get(i % playerNumber).loadDeck(new Card(cardValues.get(i)));
 			}
 			
 		}
@@ -182,7 +182,7 @@ public class CardGame {
 					playerFiles.add(pFile.getName());
 					System.out.printf("%n%s %s%n", "File directory: ", pFile.getAbsolutePath());
 				} else {
-					System.out.println("File already exists. Contents being overwritten.");
+					System.out.printf("%s%n","File already exists. Contents being overwritten.");
 					playerFiles.add(pFile.getName());
 				}
 				
@@ -191,7 +191,7 @@ public class CardGame {
 					deckFiles.add(dFile.getName());
 					System.out.printf("%n%s %s%n", "File directory: ", dFile.getAbsolutePath());
 				} else {
-					System.out.println("File already exists. Contents being overwritten.");
+					System.out.printf("%s%n", "File already exists. Contents being overwritten.");
 					deckFiles.add(dFile.getName());
 				}
 			} catch(IOException e) {
@@ -203,12 +203,12 @@ public class CardGame {
 	
 	
 
-	private static void writingToPlayerFile(String filename, Player player) {
+	private static void writeInitialHand(String filename, Player player) {
 		try {
 			String dir = outputFolder() + filename;
 			FileWriter fileWriter = new FileWriter(dir);
 			PrintWriter printWriter = new PrintWriter(fileWriter);
-			printWriter.printf("%s %s", "Initial", player.toString());
+			printWriter.printf("%s %s%n%n", "Initial", player.toString());
 		    printWriter.close();
 		} catch(IOException e) {
 			e.printStackTrace();
@@ -255,12 +255,20 @@ public class CardGame {
 		createFiles();
 		
 		 for(int i = 0; i < playerFiles.size(); i++) {
-		 	writingToPlayerFile(playerFiles.get(i), playerList.get(i));
+		 	writeInitialHand(playerFiles.get(i), playerList.get(i));
 		 }
 		 
 		 for(int i = 0; i < deckFiles.size(); i++) {
 			 writingToDeckFile(deckFiles.get(i), deckList.get(i), i);
 		}
+		 
+		 playerList.get(0).takeAndPutCards(deckList.get(0), deckList.get(1));
+		 
+		 /*
+		  * for(int i = 0; i < playerList.size(); i++) {
+		  * 	playerList.get(i).start();
+		  * }
+		  */
 		 
 		
 	}
