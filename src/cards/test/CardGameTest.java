@@ -69,8 +69,19 @@ class CardGameTest {
 		 for(CardDeck deck: CardGame.deckList) { 
 			 System.out.println(deck.getSize());
 			 Assertions.assertEquals(4, deck.getSize()); 	 
-		 } 
-		 
+		 }  
+	 }
+	 
+	 @Test
+	 @Order(6)
+	 @Tag("UnitTest")
+	 void testPlayerDeckAssignment() {
+		 System.out.printf("%n%n%s%n%n","=======PLAYER DECK ASSIGNMENT TEST EXECUTED=======");
+		 CardGame.playerDeckAssignment();
+		 for(Player player : CardGame.playerList) {
+			 Assertions.assertNotNull(player.getLeftDeck());
+			 Assertions.assertNotNull(player.getRightDeck());
+		 }
 	 }
 	
 	

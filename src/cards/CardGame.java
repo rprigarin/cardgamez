@@ -4,11 +4,11 @@ import java.io.*;
 public class CardGame {
 	protected static int playerNumber = 0;
 	protected static String packLocation = "";
+	private static int gameWinner = 0;
 	static Scanner input = new Scanner(System.in);
 	public static List<Player> playerList = new ArrayList<Player>();
 	public static List<CardDeck> deckList = new ArrayList<CardDeck>();
 	private static ArrayList<Integer> cardValues = new ArrayList<Integer>();
-	// take these out?
 	public static List<String> playerFiles = new ArrayList<String>();
 	public static List<String> deckFiles = new ArrayList<String>();
 	
@@ -147,12 +147,28 @@ public class CardGame {
 		}
 	}
 	
+	public static void playerDeckAssignment()
+	{
+		for(int i = 0; i < playerNumber; i++)
+		{
+			playerList.get(i).setLeftDeck(deckList.get(i));
+			
+			if(i + 1 < playerNumber)
+			{
+				playerList.get(i).setRightDeck(deckList.get(i+1));
+			}
+			else {
+				playerList.get(i).setRightDeck(deckList.get(0));
+			}
+		}
+	}
+	
 	public static void distributeCards()
 	{
 		if(cardValues.size() != 0) {
 			// distribute to players
 			for(int i = 0; i <= cardValues.size()/2; i++) {
-				playerList.get(i % playerNumber).getDeck().loadDeck(new Card(cardValues.get(i)));
+				playerList.get(i % playerNumber).getHand().loadDeck(new Card(cardValues.get(i)));
 			}
 			
 			// distribute to decks
@@ -195,38 +211,19 @@ public class CardGame {
 					deckFiles.add(dFile.getName());
 				}
 			} catch(IOException e) {
-				System.out.println("An error occured.");
 				e.printStackTrace();
 			}
 		}
 	}
 	
-	
-
-	private static void writeInitialHand(String filename, Player player) {
-		try {
-			String dir = outputFolder() + filename;
-			FileWriter fileWriter = new FileWriter(dir);
-			PrintWriter printWriter = new PrintWriter(fileWriter);
-			printWriter.printf("%s %s%n%n", "Initial", player.toString());
-		    printWriter.close();
-		} catch(IOException e) {
-			e.printStackTrace();
-			
-		}
-	}
-	
-
-	private static void writingToDeckFile(String filename, CardDeck deck, int deckNum) {
-		try {
-			String dir = outputFolder() + filename;
-			FileWriter fileWriter = new FileWriter(dir);
-			PrintWriter printWriter = new PrintWriter(fileWriter);
-			printWriter.printf("%s %d %s %s", "Deck", (deckNum + 1), "contents:", deck.toString());
-		    printWriter.close();
-		} catch(IOException e) {
-			e.printStackTrace();	
-		}
+	protected static boolean winAtStart(int denom) {
+		playerList.get(denom).cardsOfSameValue();
+		  if(playerList.get(denom).getGameOver()) {
+			  OutputWriting.playerWonGame(playerFiles.get(denom), playerList.get(denom));
+			  gameWinner = denom;
+		  } 
+		  
+		  return false;
 	}
 
 	public static void main(String[] args) {
@@ -241,6 +238,8 @@ public class CardGame {
 		// fill decks with cards from pack
 		distributeCards();
 		
+		// assign decks to players
+		playerDeckAssignment();
 		
 		// Remove from the final product. Not needed
 		for(int i = 0; i < playerList.size(); i++) {
@@ -255,20 +254,27 @@ public class CardGame {
 		createFiles();
 		
 		 for(int i = 0; i < playerFiles.size(); i++) {
-		 	writeInitialHand(playerFiles.get(i), playerList.get(i));
+		 	OutputWriting.writeInitialHand(playerFiles.get(i), playerList.get(i));
 		 }
 		 
-		 for(int i = 0; i < deckFiles.size(); i++) {
-			 writingToDeckFile(deckFiles.get(i), deckList.get(i), i);
-		}
+		 //playerList.get(0).takeAndPutCards(deckList.get(0), deckList.get(1));
 		 
-		 playerList.get(0).takeAndPutCards(deckList.get(0), deckList.get(1));
 		 
-		 /*
-		  * for(int i = 0; i < playerList.size(); i++) {
-		  * 	playerList.get(i).start();
-		  * }
-		  */
+		  for(int i = 0; i < playerList.size(); i++) {
+			  if(winAtStart(i) == true) {
+				  OutputWriting.writingToDeckFile(deckFiles.get(i), deckList.get(i), i);
+				  if(i != gameWinner) {
+					  OutputWriting.playerLostGame(playerFiles.get(i), playerList.get(i), gameWinner);
+				  }
+			  } else {
+				  new Thread(playerList.get(i)).start();
+			  }
+		  }
+		  
+		  for(int i = 0; i < deckFiles.size(); i++) {
+			 	OutputWriting.writingToDeckFile(deckFiles.get(i), deckList.get(i), i);
+			 }
+
 		 
 		
 	}

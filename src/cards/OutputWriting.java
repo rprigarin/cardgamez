@@ -36,6 +36,57 @@ public class OutputWriting {
 			
 		}
 	}
+	
+	protected static void writeInitialHand(String filename, Player player) {
+		try {
+			String dir = CardGame.outputFolder() + filename;
+			FileWriter fileWriter = new FileWriter(dir);
+			PrintWriter printWriter = new PrintWriter(fileWriter);
+			printWriter.printf("%s %s%n%n", "Initial", player.toString());
+		    printWriter.close();
+		} catch(IOException e) {
+			e.printStackTrace();
+			
+		}
+	}
+	
+	protected static void writingToDeckFile(String filename, CardDeck deck, int deckNum) {
+		try {
+			String dir = CardGame.outputFolder() + filename;
+			FileWriter fileWriter = new FileWriter(dir);
+			PrintWriter printWriter = new PrintWriter(fileWriter);
+			printWriter.printf("%s %d %s %s", "Deck", (deckNum + 1), "contents:", deck.toString());
+		    printWriter.close();
+		} catch(IOException e) {
+			e.printStackTrace();	
+		}
+	}
+	
+	protected static void playerWonGame(String filename, Player player) {
+		try {
+			String dir = CardGame.outputFolder() + filename;
+			FileWriter fileWriter = new FileWriter(dir);
+			PrintWriter printWriter = new PrintWriter(fileWriter);
+			printWriter.printf("%s %d %s%n%s %s%n%s %d %s%n%n", "Player", player.getDenomination(), "won.", "Final hand:", player.toString(), "Player",
+					player.getDenomination(), "exits.");
+		    printWriter.close();
+		} catch(IOException e) {
+			e.printStackTrace();
+			
+		}
+	}
 
-
+	protected static void playerLostGame(String filename, Player player, int winner) {
+		try {
+			String dir = CardGame.outputFolder() + filename;
+			FileWriter fileWriter = new FileWriter(dir);
+			PrintWriter printWriter = new PrintWriter(fileWriter);
+			printWriter.printf("%s %d %s%n%s %s%n%s %d %s%n%n", "Player", winner, "won.", "Final hand:", player.toString(), "Player",
+					player.getDenomination(), "exits.");
+		    printWriter.close();
+		} catch(IOException e) {
+			e.printStackTrace();
+			
+		}
+	}
 }

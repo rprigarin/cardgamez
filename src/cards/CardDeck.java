@@ -6,7 +6,7 @@ import java.util.Collections;
 public class CardDeck {
 	
 	private volatile ArrayList<Card> deck;
-	protected final int SIZE = 4;
+	public static final int SIZE = 4;
 	
 	public CardDeck()
 	{
