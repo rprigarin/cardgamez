@@ -2,6 +2,8 @@ package cards;
 import java.util.*;
 import java.io.*;
 public class CardGame {
+	
+	// Attributes
 	protected static int playerNumber = 0;
 	protected static String packLocation = "";
 	private static int gameWinner = 0;
@@ -11,6 +13,7 @@ public class CardGame {
 	private static ArrayList<Integer> cardValues = new ArrayList<Integer>();
 	public static List<String> playerFiles = new ArrayList<String>();
 	public static List<String> deckFiles = new ArrayList<String>();
+	protected static boolean gameOver = false;
 	
 	// take player input
 	public static void setup() {
@@ -218,7 +221,7 @@ public class CardGame {
 	
 	protected static boolean winAtStart(int denom) {
 		playerList.get(denom).cardsOfSameValue();
-		  if(playerList.get(denom).getGameOver()) {
+		  if(gameOver) {
 			  OutputWriting.playerWonGame(playerFiles.get(denom), playerList.get(denom));
 			  gameWinner = denom;
 		  } 

@@ -32,15 +32,13 @@ public class CardDeck {
 		return deck.get(index);
 	}
 	
-	public Card takeFirstCard()
+	public Card takeFirstCard() throws IndexOutOfBoundsException
 	{
-		// NOTE: need to add a check so as to not remove from empty array list
 		return deck.remove(0);
 	}
 	
-	public Card takeLastCard()
+	public Card takeLastCard() throws IndexOutOfBoundsException
 	{
-		// NOTE: need to add a check so as to not remove from empty array list
 		return deck.remove(deck.size() - 1);
 	}
 	
@@ -73,9 +71,11 @@ public class CardDeck {
 		{
 			for(int i = 0; i < SIZE; i++)
 			{
-				if(deck.get(i).getValue() % preference == 0)
+				if(deck.get(i).getValue() - preference == 0)
 				{
 					deck.add(0, deck.remove(i));
+				} else {
+					deck.add(deck.remove(i));
 				}
 			}
 

@@ -28,8 +28,12 @@ public class OutputWriting {
 			String dir = CardGame.outputFolder() + filename;
 			FileWriter fileWriter = new FileWriter(dir, true);
 			PrintWriter printWriter = new PrintWriter(fileWriter);
-			printWriter.println("Player " + denom + " dropped " + cardValue + " to Deck " + (denom + 1));
-			printWriter.printf("%s %d %s %s%n%n", "Player" , denom , " current hand: " , deck);
+			if(denom == CardGame.playerNumber) {
+				printWriter.println("Player " + denom + " dropped " + cardValue + " to Deck " + 1);
+			} else {
+				printWriter.println("Player " + denom + " dropped " + cardValue + " to Deck " + (denom + 1));
+			}
+			printWriter.printf("%s %d %s %s%n%n", "Player" , denom , "current hand: " , deck);
 		    printWriter.close();
 		} catch(IOException e) {
 			e.printStackTrace();
@@ -81,7 +85,7 @@ public class OutputWriting {
 			String dir = CardGame.outputFolder() + filename;
 			FileWriter fileWriter = new FileWriter(dir);
 			PrintWriter printWriter = new PrintWriter(fileWriter);
-			printWriter.printf("%s %d %s%n%s %s%n%s %d %s%n%n", "Player", winner, "won.", "Final hand:", player.toString(), "Player",
+			printWriter.printf("%s %d %s %d %s%n%s %s%n%s %d %s%n%n", "Player", player.getDenomination(), "has been informed Player", winner, "won.", "Final hand:", player.toString(), "Player",
 					player.getDenomination(), "exits.");
 		    printWriter.close();
 		} catch(IOException e) {

@@ -7,13 +7,12 @@ public class Player implements Runnable {
 	public CardDeck leftDeck;
 	public CardDeck rightDeck;
 	private int denomination;
-	private boolean gameOver;
+	
 	
 	public Player(int denomination) {
 		playerDeck = new CardDeck();
 		this.denomination = denomination;
 		
-		gameOver = false;
 	}
 	
 	public Player(int denomination, CardDeck leftDeck, CardDeck rightDeck) {
@@ -21,8 +20,6 @@ public class Player implements Runnable {
 		this.denomination = denomination;
 		this.leftDeck = leftDeck;
 		this.rightDeck = rightDeck;
-		
-		gameOver = false;
 	}
 	
 	//
@@ -51,9 +48,6 @@ public class Player implements Runnable {
 		return denomination;
 	}
 	
-	public boolean getGameOver() {
-		return gameOver;
-	}
 	
 	public void cardsOfSameValue()
 	{
@@ -70,45 +64,62 @@ public class Player implements Runnable {
 		}
 		
 		if(counter == 3) {
-			gameOver = true;
+			CardGame.gameOver = true;
 		}
 		
 	}
 	
 	public void run() {
-		try {
-			while(!gameOver)
-			{
+		while(!CardGame.gameOver)
+		{
+			synchronized(this) {
 				// take and put cards from left and right decks
 				takeAndPutCards();
 				// check player hand for same value
 				cardsOfSameValue();
 				
-				wait();
-				notify();
-			
+				try {
+					Thread.sleep(1000);
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 			}
-		} catch(InterruptedException e) {
-			e.printStackTrace();
 		}
 	}
 	
-	public synchronized void takeAndPutCards()
+	public void takeAndPutCards()
 	{
 		playerDeck.sortDeckByPreference(denomination);
-		String drawnCard = playerDeck.getCard(playerDeck.SIZE - 1).toString();
-		System.out.println("Player deck: " + playerDeck.toString());
+		String droppedCard = playerDeck.getCard(CardDeck.SIZE - 1).toString();
+		String pickedCard = leftDeck.getCard(0).toString();
+		System.out.println("Player " + denomination + " deck: " + playerDeck.toString());
 		
-		rightDeck.addCard(playerDeck.takeLastCard());
+		try {
+			rightDeck.addCard(playerDeck.takeLastCard());
+		}
+		catch(Exception e) {
+			e.printStackTrace();
+		}
+		
 		System.out.println("Right deck: " + rightDeck.toString());
 		System.out.println("Player deck: " + playerDeck.toString());
 		
 		playerDeck.addCard(leftDeck.getCard(0));
-		leftDeck.takeFirstCard();
-		OutputWriting.pickingCard(leftDeck.getCard(0).toString(), denomination);
-		OutputWriting.droppingCard(drawnCard, playerDeck.toString(), denomination);
+		
+		try {
+			leftDeck.takeFirstCard();
+		}
+		catch(Exception e) {
+			e.printStackTrace();
+		}
+		
+		OutputWriting.pickingCard(pickedCard, denomination);
+		OutputWriting.droppingCard(droppedCard, playerDeck.toString(), denomination);
 		System.out.println("Left Deck: " + leftDeck.toString());
-		System.out.println("Player deck: " + playerDeck.toString());
+		System.out.println("Player " + denomination + " deck after take and put operations: " + playerDeck.toString());
+		System.out.println();
+		
 	}
 	
 	public CardDeck getHand()
