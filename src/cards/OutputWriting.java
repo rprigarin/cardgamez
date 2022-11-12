@@ -69,7 +69,7 @@ public class OutputWriting {
 	protected static void playerWonGame(String filename, Player player) {
 		try {
 			String dir = CardGame.outputFolder() + filename;
-			FileWriter fileWriter = new FileWriter(dir);
+			FileWriter fileWriter = new FileWriter(dir, true);
 			PrintWriter printWriter = new PrintWriter(fileWriter);
 			printWriter.printf("%s %d %s%n%s %s%n%s %d %s%n%n", "Player", player.getDenomination(), "won.", "Final hand:", player.toString(), "Player",
 					player.getDenomination(), "exits.");
@@ -83,7 +83,7 @@ public class OutputWriting {
 	protected static void playerLostGame(String filename, Player player, int winner) {
 		try {
 			String dir = CardGame.outputFolder() + filename;
-			FileWriter fileWriter = new FileWriter(dir);
+			FileWriter fileWriter = new FileWriter(dir, true);
 			PrintWriter printWriter = new PrintWriter(fileWriter);
 			printWriter.printf("%s %d %s %d %s%n%s %s%n%s %d %s%n%n", "Player", player.getDenomination(), "has been informed Player", winner, "won.", "Final hand:", player.toString(), "Player",
 					player.getDenomination(), "exits.");

@@ -64,6 +64,7 @@ public class Player implements Runnable {
 		}
 		
 		if(counter == 3) {
+			CardGame.gameWinner = denomination;
 			CardGame.gameOver = true;
 		}
 		
@@ -85,6 +86,12 @@ public class Player implements Runnable {
 					e.printStackTrace();
 				}
 			}
+		}
+
+		if(denomination == CardGame.gameWinner) {
+			OutputWriting.playerWonGame("player" + denomination + "_output.txt", this);
+		} else {
+			OutputWriting.playerLostGame("player" + denomination + "_output.txt", this, CardGame.gameWinner);
 		}
 	}
 	

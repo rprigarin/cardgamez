@@ -6,7 +6,7 @@ public class CardGame {
 	// Attributes
 	protected static int playerNumber = 0;
 	protected static String packLocation = "";
-	private static int gameWinner = 0;
+	protected static int gameWinner = 0;
 	static Scanner input = new Scanner(System.in);
 	public static List<Player> playerList = new ArrayList<Player>();
 	public static List<CardDeck> deckList = new ArrayList<CardDeck>();
@@ -219,11 +219,10 @@ public class CardGame {
 		}
 	}
 	
-	protected static boolean winAtStart(int denom) {
-		playerList.get(denom).cardsOfSameValue();
+	protected static boolean gameWon(int index) {
+		playerList.get(index).cardsOfSameValue();
 		  if(gameOver) {
-			  OutputWriting.playerWonGame(playerFiles.get(denom), playerList.get(denom));
-			  gameWinner = denom;
+			  OutputWriting.playerWonGame(playerFiles.get(index), playerList.get(index));
 		  } 
 		  
 		  return false;
@@ -264,7 +263,7 @@ public class CardGame {
 		 
 		 
 		  for(int i = 0; i < playerList.size(); i++) {
-			  if(winAtStart(i) == true) {
+			  if(gameWon(i) == true) {
 				  OutputWriting.writingToDeckFile(deckFiles.get(i), deckList.get(i), i);
 				  if(i != gameWinner) {
 					  OutputWriting.playerLostGame(playerFiles.get(i), playerList.get(i), gameWinner);
@@ -277,9 +276,8 @@ public class CardGame {
 		  for(int i = 0; i < deckFiles.size(); i++) {
 			 	OutputWriting.writingToDeckFile(deckFiles.get(i), deckList.get(i), i);
 			 }
+		  
 
-		 
-		
 	}
 
 }
