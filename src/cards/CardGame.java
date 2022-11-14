@@ -14,6 +14,7 @@ public class CardGame {
 	public static List<String> playerFiles = new ArrayList<String>();
 	public static List<String> deckFiles = new ArrayList<String>();
 	protected static volatile boolean gameOver = false;
+	private static String outputPath = "./output_files/";
 	
 	// take player input
 	public static void setup() {
@@ -66,7 +67,7 @@ public class CardGame {
 		System.out.print("Please enter location of pack to load: ");
 		packLocation = input.next();
 		
-		/* Verification to ensure that the pack file is a plain text file.
+		/* Verification to ensure that the pack file is a plain text file and follows Windows file naming conventions.
 		 * Repeats until the user enters a valid location 
 		 */
 		while ((packLocation.length() < 4) || (!(packLocation.substring(packLocation.length() - 4,
@@ -169,12 +170,12 @@ public class CardGame {
 	public static void distributeCards()
 	{
 		if(cardValues.size() != 0) {
-			// distribute to players
+			// distribute cards to players
 			for(int i = 0; i <= cardValues.size()/2; i++) {
 				playerList.get(i % playerNumber).getHand().loadDeck(new Card(cardValues.get(i)));
 			}
 			
-			// distribute to decks
+			// distribute cards to decks
 			for(int i = cardValues.size()/2; i < cardValues.size(); i++) {
 				deckList.get(i % playerNumber).loadDeck(new Card(cardValues.get(i)));
 			}
@@ -183,10 +184,14 @@ public class CardGame {
 
 	}
 	
+	// Create output folders for storing player and deck logs
 	protected static String outputFolder() {
-		String directory = "./output_files/";
-		new File(directory).mkdirs();	
-		return directory;
+		new File(outputPath).mkdirs();	
+		return outputPath;
+	}
+	
+	public static boolean isGameOver() {
+		return gameOver;
 	}
 	
 	public static void createFiles() {
@@ -216,14 +221,10 @@ public class CardGame {
 			}
 		}
 		
-		System.out.println("All files can be found in: " + outputFolder());
+		System.out.printf("%n%n%s %s", "All files can be found in:", outputFolder());
 	}
 	
 	protected static void startGame() {
-		/* Iterate through the list of players and check if any of them have a winning hand to start the game.
-		 * If they do, the game will end and the output will be written to the files. Otherwise, the Player 
-		 * threads will start
-		 */
 		 for(int i = 0; i < playerList.size(); i++) {
 			 if(gameWon(i) == true) {
 				 OutputWriting.writingToDeckFile(deckFiles.get(i), deckList.get(i), i);
@@ -246,11 +247,13 @@ public class CardGame {
 	}
 
 	public static void main(String[] args) {
-		// input; pack creation
+		// take user input for the number of players and the location of the pack
 		setup();
+		
+		// Generates a valid pack for the players to use and then creates the file location for the pack to be stored in
 		storingPack(packCreation());
 		
-		// create of players and decks
+		// creation of players and decks
 		playerCreation();
 		deckCreation();
 		
@@ -275,8 +278,8 @@ public class CardGame {
 		  */
 		  startGame();
 		  
-		  // Iterate through the list of deck filenames and output the current decks to the files 
 		  
+		  // Iterate through the list of deck filenames and output the final decks to the files 
 		  for(int i = 0; i < deckFiles.size(); i++) {
 			 	OutputWriting.writingToDeckFile(deckFiles.get(i), deckList.get(i), i);
 			 }

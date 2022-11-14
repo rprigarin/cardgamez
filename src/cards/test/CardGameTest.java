@@ -16,7 +16,6 @@ class CardGameTest {
 	}
 
 	@Test
-	@Order(1)
 	@Tag("UnitTest")
 	void testSetup() {
 		System.out.printf("%s%n%n", "=======SETUP TEST EXECUTED=======");
@@ -27,7 +26,6 @@ class CardGameTest {
 	}
 
 	@Test
-	@Order(2)
 	@Tag("UnitTest")
 	void testPackCreation() {
 		System.out.printf("%n%n%s%n%n", "=======PACK CREATION TEST EXECUTED=======");
@@ -37,7 +35,6 @@ class CardGameTest {
 	
 	
 	@Test
-	@Order(3)
 	@Tag("UnitTest")
 	void testDeckCreation() {
 		System.out.printf("%n%n%s%n%n", "=======DECK CREATION TEST EXECUTED=======");
@@ -47,7 +44,6 @@ class CardGameTest {
 	}
 	
 	@Test
-	@Order(4)
 	@Tag("UnitTest")
 	void testPlayerCreation() {
 		System.out.printf("%n%n%s%n%n", "=======PLAYER CREATION TEST EXECUTED=======");
@@ -59,7 +55,6 @@ class CardGameTest {
 	
 	
 	 @Test
-	 @Order(5)
 	 @Tag("UnitTest") 
 	 void testDistributeCards() { 
 		 System.out.printf("%n%n%s%n%n","=======CARD DISTRIBUTION TEST EXECUTED=======");
@@ -73,7 +68,6 @@ class CardGameTest {
 	 }
 	 
 	 @Test
-	 @Order(6)
 	 @Tag("UnitTest")
 	 void testPlayerDeckAssignment() {
 		 System.out.printf("%n%n%s%n%n","=======PLAYER DECK ASSIGNMENT TEST EXECUTED=======");

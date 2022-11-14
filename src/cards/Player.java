@@ -48,7 +48,6 @@ public class Player implements Runnable {
 		return denomination;
 	}
 	
-	
 	public void cardsOfSameValue()
 	{
 		// check deck for cards of same value
@@ -75,7 +74,7 @@ public class Player implements Runnable {
 			while(!CardGame.gameOver)
 			{
 				// take and put cards from left and right decks
-				if(leftDeck.getSize() != 0) {
+				if(leftDeck.getSize() > 0) {
 					takeAndPutCards();
 				}
 					// check player hand for same value
@@ -100,18 +99,20 @@ public class Player implements Runnable {
 	
 	public void takeAndPutCards()
 	{
-		playerDeck.sortDeckByPreference(denomination);
-		
-		String droppedCard = playerDeck.getCard(CardDeck.SIZE - 1).toString();
-		String pickedCard = leftDeck.getCard(0).toString();
-		
-		rightDeck.addCard(playerDeck.takeLastCard());
-		
-		playerDeck.addCard(leftDeck.getCard(0));
-		
-		leftDeck.takeFirstCard();
-		OutputWriting.pickingCard(pickedCard, denomination);
-		OutputWriting.droppingCard(droppedCard, playerDeck.toString(), denomination);	
+		if(leftDeck.getCard(0) != null) {
+			playerDeck.sortDeckByPreference(denomination);
+			
+			String droppedCard = playerDeck.getCard(CardDeck.SIZE - 1).toString();
+			String pickedCard = leftDeck.getCard(0).toString();
+			
+			rightDeck.addCard(playerDeck.takeLastCard());
+			
+			playerDeck.addCard(leftDeck.getCard(0));
+			
+			leftDeck.takeFirstCard();
+			OutputWriting.pickingCard(pickedCard, denomination);
+			OutputWriting.droppingCard(droppedCard, playerDeck.toString(), denomination);
+		}
 	}
 	
 	public CardDeck getHand()

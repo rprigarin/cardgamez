@@ -82,11 +82,6 @@ public class CardDeck {
 		}
 	}
 	
-	public ArrayList<Integer> getCardValues()
-	{
-		return new ArrayList<Integer>();
-	}
-	
 	public int getSize() {
 		return deck.size();
 	}

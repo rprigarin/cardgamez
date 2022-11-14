@@ -1,8 +1,6 @@
 package cards.test;
 
-import cards.Player;
-import cards.CardDeck;
-import cards.Card;
+import cards.*;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Assertions;
@@ -51,10 +49,8 @@ class PlayerTest {
 		player1.cardsOfSameValue();
 		player2.cardsOfSameValue();
 		player3.cardsOfSameValue();
-		
-//		Assertions.assertTrue(player1.getGameOver());
-//		Assertions.assertFalse(player2.getGameOver());
-//		Assertions.assertFalse(player3.getGameOver());
+
+		Assertions.assertTrue(CardGame.isGameOver());
 		
 	}
 
