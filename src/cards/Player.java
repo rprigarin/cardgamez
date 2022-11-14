@@ -71,13 +71,15 @@ public class Player implements Runnable {
 	}
 	
 	public void run() {
-		while(!CardGame.gameOver)
-		{
-			synchronized(this) {
+		synchronized(this) {
+			while(!CardGame.gameOver)
+			{
 				// take and put cards from left and right decks
-				takeAndPutCards();
-				// check player hand for same value
-				cardsOfSameValue();
+				if(leftDeck.getSize() != 0) {
+					takeAndPutCards();
+				}
+					// check player hand for same value
+					cardsOfSameValue();
 				
 				try {
 					Thread.sleep(1000);
@@ -86,47 +88,30 @@ public class Player implements Runnable {
 					e.printStackTrace();
 				}
 			}
-		}
-
-		if(denomination == CardGame.gameWinner) {
-			OutputWriting.playerWonGame("player" + denomination + "_output.txt", this);
-		} else {
-			OutputWriting.playerLostGame("player" + denomination + "_output.txt", this, CardGame.gameWinner);
+			
+			if(denomination == CardGame.gameWinner) {
+				OutputWriting.playerWonGame("player" + denomination + "_output.txt", this);
+				System.out.printf("%n%n%s %d %s", "Player", denomination, "won the game!");
+			} else {
+				OutputWriting.playerLostGame("player" + denomination + "_output.txt", this, CardGame.gameWinner);
+			}
 		}
 	}
 	
 	public void takeAndPutCards()
 	{
 		playerDeck.sortDeckByPreference(denomination);
+		
 		String droppedCard = playerDeck.getCard(CardDeck.SIZE - 1).toString();
 		String pickedCard = leftDeck.getCard(0).toString();
-		System.out.println("Player " + denomination + " deck: " + playerDeck.toString());
 		
-		try {
-			rightDeck.addCard(playerDeck.takeLastCard());
-		}
-		catch(Exception e) {
-			e.printStackTrace();
-		}
-		
-		System.out.println("Right deck: " + rightDeck.toString());
-		System.out.println("Player deck: " + playerDeck.toString());
+		rightDeck.addCard(playerDeck.takeLastCard());
 		
 		playerDeck.addCard(leftDeck.getCard(0));
 		
-		try {
-			leftDeck.takeFirstCard();
-		}
-		catch(Exception e) {
-			e.printStackTrace();
-		}
-		
+		leftDeck.takeFirstCard();
 		OutputWriting.pickingCard(pickedCard, denomination);
-		OutputWriting.droppingCard(droppedCard, playerDeck.toString(), denomination);
-		System.out.println("Left Deck: " + leftDeck.toString());
-		System.out.println("Player " + denomination + " deck after take and put operations: " + playerDeck.toString());
-		System.out.println();
-		
+		OutputWriting.droppingCard(droppedCard, playerDeck.toString(), denomination);	
 	}
 	
 	public CardDeck getHand()

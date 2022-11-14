@@ -13,7 +13,7 @@ public class CardGame {
 	private static ArrayList<Integer> cardValues = new ArrayList<Integer>();
 	public static List<String> playerFiles = new ArrayList<String>();
 	public static List<String> deckFiles = new ArrayList<String>();
-	protected static boolean gameOver = false;
+	protected static volatile boolean gameOver = false;
 	
 	// take player input
 	public static void setup() {
@@ -115,7 +115,7 @@ public class CardGame {
 			if(packFile.createNewFile()) {
 				System.out.printf("%n%s %s", "Pack was successfully stored in:", packLocation);
 			} else {
-				System.out.printf("%n%s", "File already exists; overwriting pack file");
+				System.out.printf("%n%s%n", "File already exists; overwriting pack file");
 			}
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -199,7 +199,6 @@ public class CardGame {
 				// Creating player files and adding them to a list 
 				if(pFile.createNewFile()) {
 					playerFiles.add(pFile.getName());
-					System.out.printf("%n%s %s%n", "File directory: ", pFile.getAbsolutePath());
 				} else {
 					System.out.printf("%s%n","File already exists. Contents being overwritten.");
 					playerFiles.add(pFile.getName());
@@ -208,7 +207,6 @@ public class CardGame {
 				// Creating deck files and adding them to a list 
 				if(dFile.createNewFile()) {
 					deckFiles.add(dFile.getName());
-					System.out.printf("%n%s %s%n", "File directory: ", dFile.getAbsolutePath());
 				} else {
 					System.out.printf("%s%n", "File already exists. Contents being overwritten.");
 					deckFiles.add(dFile.getName());
@@ -217,6 +215,25 @@ public class CardGame {
 				e.printStackTrace();
 			}
 		}
+		
+		System.out.println("All files can be found in: " + outputFolder());
+	}
+	
+	protected static void startGame() {
+		/* Iterate through the list of players and check if any of them have a winning hand to start the game.
+		 * If they do, the game will end and the output will be written to the files. Otherwise, the Player 
+		 * threads will start
+		 */
+		 for(int i = 0; i < playerList.size(); i++) {
+			 if(gameWon(i) == true) {
+				 OutputWriting.writingToDeckFile(deckFiles.get(i), deckList.get(i), i);
+				 if(i != gameWinner) {
+					 OutputWriting.playerLostGame(playerFiles.get(i), playerList.get(i), gameWinner);
+				 }
+			 } else {
+				 new Thread(playerList.get(i)).start();
+			 }
+		 }
 	}
 	
 	protected static boolean gameWon(int index) {
@@ -243,14 +260,6 @@ public class CardGame {
 		// assign decks to players
 		playerDeckAssignment();
 		
-		// Remove from the final product. Not needed
-		for(int i = 0; i < playerList.size(); i++) {
-			System.out.printf("%n%s%n",playerList.get(i).toString());
-		}
-		
-		for(int i = 0; i < deckList.size(); i++) {
-			System.out.printf("%n%s %d %s%n","Deck", (i + 1), deckList.get(i).toString());
-		}
 		
 		// Creating player files and adding initial hands
 		createFiles();
@@ -259,19 +268,14 @@ public class CardGame {
 		 	OutputWriting.writeInitialHand(playerFiles.get(i), playerList.get(i));
 		 }
 		 
-		 //playerList.get(0).takeAndPutCards(deckList.get(0), deckList.get(1));
 		 
-		 
-		  for(int i = 0; i < playerList.size(); i++) {
-			  if(gameWon(i) == true) {
-				  OutputWriting.writingToDeckFile(deckFiles.get(i), deckList.get(i), i);
-				  if(i != gameWinner) {
-					  OutputWriting.playerLostGame(playerFiles.get(i), playerList.get(i), gameWinner);
-				  }
-			  } else {
-				  new Thread(playerList.get(i)).start();
-			  }
-		  }
+		 /* Iterate through the list of players and check if any of them have a winning hand to start the game.
+		  * If they do, the game will end and the output will be written to the files. Otherwise, the Player 
+		  * threads will start
+		  */
+		  startGame();
+		  
+		  // Iterate through the list of deck filenames and output the current decks to the files 
 		  
 		  for(int i = 0; i < deckFiles.size(); i++) {
 			 	OutputWriting.writingToDeckFile(deckFiles.get(i), deckList.get(i), i);
