@@ -13,9 +13,9 @@ public class CardDeck {
 		deck = new ArrayList<Card>();
 	}
 	
+	// adds cards based on size limit
 	public void loadDeck(Card c)
 	{	
-		// limit addition of cards to 4
 		if(deck.size() < SIZE)
 		{
 			deck.add(c);
@@ -23,6 +23,7 @@ public class CardDeck {
 
 	}
 	
+	// adds cards (deck use only)
 	public void addCard(Card c) {
 		deck.add(c);
 	}
@@ -65,8 +66,10 @@ public class CardDeck {
 	
 	public void sortDeckByPreference(int preference)
 	{
+		// sort deck normally before applying preference
 		sortDeck();
 		
+		// perform preference sort
 		if(preference != 1)
 		{
 			for(int i = 0; i < SIZE; i++)

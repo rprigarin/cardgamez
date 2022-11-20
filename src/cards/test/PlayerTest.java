@@ -10,8 +10,14 @@ import org.junit.jupiter.api.Test;
 
 class PlayerTest {
 
+	@BeforeAll
+	static void before() {
+		System.out.printf("%s%n", "=======< PLAYER TEST EXECUTED >=======");
+	}
+	
 	@Test
 	void testTakeAndPutCards() {
+		System.out.printf("%s%n%n", ">> testTakeAndPutCards executed");
 		Player somePlayer = new Player(1, new CardDeck(), new CardDeck());
 		
 		// add cards to decks
@@ -30,6 +36,7 @@ class PlayerTest {
 	
 	@Test
 	void testCardOfSameValue() {
+		System.out.printf("%s%n%n", ">> testCardOfSameValue executed");
 		Player player1 = new Player(1);
 		Player player2 = new Player(2);
 		Player player3 = new Player(3);

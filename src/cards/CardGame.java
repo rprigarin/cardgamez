@@ -4,17 +4,19 @@ import java.io.*;
 public class CardGame {
 	
 	// Attributes
+	static Scanner input = new Scanner(System.in);
+	protected static volatile boolean gameOver = false;
+
 	protected static int playerNumber = 0;
 	protected static String packLocation = "";
 	protected static int gameWinner = 0;
-	static Scanner input = new Scanner(System.in);
+	
+	private static ArrayList<Integer> cardValues = new ArrayList<Integer>();
+	
 	public static List<Player> playerList = new ArrayList<Player>();
 	public static List<CardDeck> deckList = new ArrayList<CardDeck>();
-	private static ArrayList<Integer> cardValues = new ArrayList<Integer>();
 	public static List<String> playerFiles = new ArrayList<String>();
 	public static List<String> deckFiles = new ArrayList<String>();
-	protected static volatile boolean gameOver = false;
-	private static String outputPath = "./output_files/";
 	
 	// take player input
 	public static void setup() {
@@ -184,12 +186,6 @@ public class CardGame {
 
 	}
 	
-	// Create output folders for storing player and deck logs
-	protected static String outputFolder() {
-		new File(outputPath).mkdirs();	
-		return outputPath;
-	}
-	
 	public static boolean isGameOver() {
 		return gameOver;
 	}
@@ -198,8 +194,8 @@ public class CardGame {
 		
 		for(int i = 1; i <= playerNumber; i++) {
 			try {
-				File pFile = new File(outputFolder() + "player" + i  + "_output.txt");
-				File dFile = new File(outputFolder() + "deck" + i + "_output.txt");
+				File pFile = new File(OutputWriting.getOutputFolder() + "player" + i  + "_output.txt");
+				File dFile = new File(OutputWriting.getOutputFolder() + "deck" + i + "_output.txt");
 				
 				// Creating player files and adding them to a list 
 				if(pFile.createNewFile()) {
@@ -221,7 +217,7 @@ public class CardGame {
 			}
 		}
 		
-		System.out.printf("%n%n%s %s", "All files can be found in:", outputFolder());
+		System.out.printf("%n%n%s %s", "All files can be found in:", OutputWriting.getOutputFolder());
 	}
 	
 	protected static void startGame() {
@@ -252,6 +248,9 @@ public class CardGame {
 		
 		// Generates a valid pack for the players to use and then creates the file location for the pack to be stored in
 		storingPack(packCreation());
+		
+		// Create a folder for output files
+		OutputWriting.makeFolder();
 		
 		// creation of players and decks
 		playerCreation();

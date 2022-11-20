@@ -1,28 +1,26 @@
 package cards;
 
-// need to thread this later
 public class Player implements Runnable {
 
 	protected CardDeck playerDeck;
-	public CardDeck leftDeck;
-	public CardDeck rightDeck;
+	public CardDeck leftDeck; // the deck from which cards are taken
+	public CardDeck rightDeck; // the deck to which cards are put
 	private int denomination;
 	
-	
+	// player constructor - left and right decks are set later after creation
 	public Player(int denomination) {
 		playerDeck = new CardDeck();
 		this.denomination = denomination;
 		
 	}
 	
+	// player constructor - assigns left and right decks upon creation (testing use only)
 	public Player(int denomination, CardDeck leftDeck, CardDeck rightDeck) {
 		playerDeck = new CardDeck();
 		this.denomination = denomination;
 		this.leftDeck = leftDeck;
 		this.rightDeck = rightDeck;
 	}
-	
-	//
 	
 	public void setLeftDeck(CardDeck ld)
 	{
@@ -62,6 +60,7 @@ public class Player implements Runnable {
 			}
 		}
 		
+		// end the game based on counter value
 		if(counter == 3) {
 			CardGame.gameWinner = denomination;
 			CardGame.gameOver = true;
@@ -69,6 +68,7 @@ public class Player implements Runnable {
 		
 	}
 	
+	// multi-threading implementation for player
 	public void run() {
 		synchronized(this) {
 			while(!CardGame.gameOver)
@@ -77,15 +77,16 @@ public class Player implements Runnable {
 				if(leftDeck.getSize() > 0) {
 					takeAndPutCards();
 				}
-					// check player hand for same value
-					cardsOfSameValue();
+
+				// check player hand for same value (end the game if true)
+				cardsOfSameValue();
 				
 				try {
 					Thread.sleep(1000);
 				} catch (InterruptedException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
+
 			}
 			
 			if(denomination == CardGame.gameWinner) {
@@ -99,17 +100,20 @@ public class Player implements Runnable {
 	
 	public void takeAndPutCards()
 	{
+		// check if left deck has at least one card
 		if(leftDeck.getCard(0) != null) {
+			// sort deck to pick out cards based on player preference
 			playerDeck.sortDeckByPreference(denomination);
 			
 			String droppedCard = playerDeck.getCard(CardDeck.SIZE - 1).toString();
 			String pickedCard = leftDeck.getCard(0).toString();
 			
+			// perform take and put card operations
 			rightDeck.addCard(playerDeck.takeLastCard());
-			
 			playerDeck.addCard(leftDeck.getCard(0));
-			
 			leftDeck.takeFirstCard();
+
+			// write output to respective player file
 			OutputWriting.pickingCard(pickedCard, denomination);
 			OutputWriting.droppingCard(droppedCard, playerDeck.toString(), denomination);
 		}

@@ -1,23 +1,37 @@
 package cards;
 
+import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
 
 public class OutputWriting {
 	
-	// Can't properly test these yet. Need to make sure that the cards are being taken and dropped first.
+	private static String outputPath = "./output_files/";
+	
+	// Create output folders for storing player and deck logs
+	public static void makeFolder() {
+		new File(outputPath).mkdirs();	
+	}
+	
+	public static String getOutputFolder()
+	{
+		return outputPath;
+	}
+	
+	public static void setOutputFolder(String path)
+	{
+		outputPath = path;
+	}
 	
 	public static void pickingCard(String cardValue, int denom) {
 		try {
 			String filename = "player" + denom + "_output.txt";
-			String dir = CardGame.outputFolder() + filename;
+			String dir = outputPath + filename;
 			FileWriter fileWriter = new FileWriter(dir, true);
 			PrintWriter printWriter = new PrintWriter(fileWriter);
 			printWriter.println("Player " + denom + " picked up " + cardValue + " from Deck " + denom);
 		    printWriter.close();
-		    
-		    System.out.println(dir);
 		} catch(IOException e) {
 			e.printStackTrace();
 			
@@ -27,7 +41,7 @@ public class OutputWriting {
 	public static void droppingCard(String cardValue, String deck, int denom) {
 		try {
 			String filename = "player" + denom + "_output.txt";
-			String dir = CardGame.outputFolder() + filename;
+			String dir = outputPath + filename;
 			FileWriter fileWriter = new FileWriter(dir, true);
 			PrintWriter printWriter = new PrintWriter(fileWriter);
 			if(denom == CardGame.playerNumber) {
@@ -45,7 +59,7 @@ public class OutputWriting {
 	
 	public static void writeInitialHand(String filename, Player player) {
 		try {
-			String dir = CardGame.outputFolder() + filename;
+			String dir = outputPath + filename;
 			FileWriter fileWriter = new FileWriter(dir);
 			PrintWriter printWriter = new PrintWriter(fileWriter);
 			printWriter.printf("%s %s%n%n", "Initial", player);
@@ -58,7 +72,7 @@ public class OutputWriting {
 	
 	public static void writingToDeckFile(String filename, CardDeck deck, int deckNum) {
 		try {
-			String dir = CardGame.outputFolder() + filename;
+			String dir = outputPath + filename;
 			FileWriter fileWriter = new FileWriter(dir);
 			PrintWriter printWriter = new PrintWriter(fileWriter);
 			printWriter.printf("%s %d %s %s", "Deck", (deckNum + 1), "contents:", deck);
@@ -70,7 +84,7 @@ public class OutputWriting {
 	
 	public static void playerWonGame(String filename, Player player) {
 		try {
-			String dir = CardGame.outputFolder() + filename;
+			String dir = outputPath + filename;
 			FileWriter fileWriter = new FileWriter(dir, true);
 			PrintWriter printWriter = new PrintWriter(fileWriter);
 			printWriter.printf("%s %d %s%n%s %s%n%s %d %s%n%n", "Player", player.getDenomination(), "won.", "Final hand:", player, "Player",
@@ -84,7 +98,7 @@ public class OutputWriting {
 
 	public static void playerLostGame(String filename, Player player, int winner) {
 		try {
-			String dir = CardGame.outputFolder() + filename;
+			String dir = outputPath + filename;
 			FileWriter fileWriter = new FileWriter(dir, true);
 			PrintWriter printWriter = new PrintWriter(fileWriter);
 			printWriter.printf("%s %d %s %d %s%n%s %s%n%s %d %s%n%n", "Player", player.getDenomination(), "has been informed Player", winner, "won.", "Final hand:", player, "Player",

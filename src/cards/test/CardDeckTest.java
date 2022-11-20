@@ -6,12 +6,20 @@ import static org.junit.jupiter.api.Assertions.*;
 
 import java.util.ArrayList;
 
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 class CardDeckTest {
 
+	@BeforeAll
+	static void before() {
+		System.out.printf("%s%n", "=======< CARD DECK TEST EXECUTED >=======");
+	}
+	
 	@Test
 	void testSortDeckByPreference() {
+		System.out.printf("%s%n%n",">> testSortDeckByPreference executed");
 		CardDeck d1 = new CardDeck();
 		
 		// fill the deck with cards to make [1,2,4,1]
