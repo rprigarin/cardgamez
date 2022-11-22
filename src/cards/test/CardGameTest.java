@@ -1,12 +1,9 @@
 package cards.test;
 import cards.*;
-import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
-import java.io.File;
 
 class CardGameTest {
 	
@@ -27,10 +24,17 @@ class CardGameTest {
 
 	@Test
 	@Tag("UnitTest")
-	void testPackCreation() {
-		System.out.printf("%n%n%s%n%n", ">> testPackCreation executed");
-		int verifySize = 8 * CardGame.getPlayerNumber();
-		Assertions.assertEquals(verifySize, CardGame.packCreation().size());
+	void testVerify() {
+		System.out.printf("%n%n%s%n%n", ">> testVerify executed");
+		
+		// Cases where function should return true
+		Assertions.assertTrue(CardGame.verify("valid.txt"));
+		Assertions.assertTrue(CardGame.verify("no_win.txt"));
+		
+		// Cases where function should return false
+		Assertions.assertFalse(CardGame.verify("negative_num.txt"));
+		Assertions.assertFalse(CardGame.verify("too_many.txt"));
+		Assertions.assertFalse(CardGame.verify("not_enough.txt"));
 	}
 	
 	
@@ -51,21 +55,6 @@ class CardGameTest {
 		Assertions.assertEquals(CardGame.getPlayerNumber(), CardGame.playerList.size());
 		System.out.println("Test was successfully carried out.");
 	}
-	
-	
-	
-	 @Test
-	 @Tag("UnitTest") 
-	 void testDistributeCards() { 
-		 System.out.printf("%n%s%n%n",">> testDistributeCards executed");
-		 System.out.println(CardGame.deckList.size());
-		 CardGame.distributeCards();
-		 System.out.println(CardGame.deckList.size());
-		 for(CardDeck deck: CardGame.deckList) { 
-			 System.out.println(deck.getSize());
-			 Assertions.assertEquals(4, deck.getSize()); 	 
-		 }  
-	 }
 	 
 	 @Test
 	 @Tag("UnitTest")

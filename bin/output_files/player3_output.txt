@@ -1,0 +1,14 @@
+Initial Player #3, Hand [ 7 7 7 4 ]
+
+Player 3 picked up Card #5 from Deck 3
+Player 3 dropped Card #4 to Deck 4
+Player 3 current hand:  [ 7 7 7 5 ]
+
+Player 3 picked up Card #7 from Deck 3
+Player 3 dropped Card #5 to Deck 4
+Player 3 current hand:  [ 7 7 7 7 ]
+
+Player 3 won.
+Final hand: Player #3, Hand [ 7 7 7 7 ]
+Player 3 exits.
+

@@ -1,6 +1,7 @@
 package cards;
 import java.util.*;
 import java.io.*;
+import java.nio.file.*;
 public class CardGame {
 	
 	// Attributes
@@ -17,6 +18,50 @@ public class CardGame {
 	public static List<CardDeck> deckList = new ArrayList<CardDeck>();
 	public static List<String> playerFiles = new ArrayList<String>();
 	public static List<String> deckFiles = new ArrayList<String>();
+	
+	// verify path of the card pack
+	public static boolean verify(String filename) {
+		try {
+			Path filePath = Paths.get(filename);
+            List<String> lines = Files.readAllLines(filePath);
+            if(lines.size() == 8 * playerNumber) {
+                for(String line: lines) {
+	                try {
+	                    if(Integer.parseInt(line) < 0) {
+	                    	System.out.printf("%n%s%n", "Negative number inside pack.");
+	                        return false;
+	                    }
+	                    cardValues.add(Integer.parseInt(line));
+	                } catch(NumberFormatException e) {
+	                	System.out.printf("%n%s%n", "Not all of the values are numbers.");
+	                	cardValues.clear();
+	                    return false;
+	                }
+                }
+            } else { 
+            	System.out.printf("%n%s%n", "Pack size must (8 x number of players you entered).");
+                return false;
+            }
+            
+        } catch(IOException e) {
+        	System.out.println("Error in the IO. Please restart program.");
+        	System.exit(0);
+        }     
+
+		return true;
+    }
+	
+	// check if the card pack specified can produce a winning hand
+	private static boolean canProduceWinningHand() {
+		Collections.sort(cardValues);
+		for(int i: cardValues) {
+			if(Collections.frequency(cardValues, i) == 4) {
+				return true;
+			}
+		}
+		
+		return false;
+	}
 	
 	// take player input
 	public static void setup() {
@@ -69,14 +114,36 @@ public class CardGame {
 		System.out.print("Please enter location of pack to load: ");
 		packLocation = input.next();
 		
-		/* Verification to ensure that the pack file is a plain text file and follows Windows file naming conventions.
-		 * Repeats until the user enters a valid location 
+		Path filePath = Paths.get(packLocation);
+		boolean fakeFile = Files.notExists(filePath);
+		
+		while(fakeFile) {
+            System.out.print("Pack location entered does not exist. Please enter a valid pack location: ");
+            packLocation = input.next();
+            filePath = Paths.get(packLocation);
+            fakeFile = Files.notExists(filePath);
+        }
+		/* Verification to ensure that the pack file is a plain text file and that it contains a valid pack.
+		 * Repeats until the user enters a location that is a plain text file with a valid pack
 		 */
 		while ((packLocation.length() < 4) || (!(packLocation.substring(packLocation.length() - 4,
-				packLocation.length()).equals(".txt"))) || (packLocation.contains("?")) || (packLocation.contains("|"))
-				|| (packLocation.contains("\"")) || (packLocation.contains(":")) || (packLocation.contains("/")) || (packLocation.contains("<")) || (packLocation.contains(">"))) {
+				packLocation.length()).equals(".txt"))) || (verify(packLocation) == false)) {
 			System.out.print("Invalid pack location. Please enter a valid pack location: ");
 			packLocation = input.next();
+		}
+		
+		
+		if(canProduceWinningHand() == false) {
+			String response = "";
+			System.out.println();
+			System.out.println("The pack that you requested cannot produce a winning hand, leading to the game running infinitely.\nWould you like to continue? (y/n)");
+			response = input.next();
+			
+			if(response.equals("n")) {
+				// terminate program
+				System.out.println("Restart program to try again.");
+				System.exit(0);
+			}
 		}
 		input.close();
 	}
@@ -89,58 +156,7 @@ public class CardGame {
 		return packLocation;
 	}
 	
-	public static ArrayList<Integer> packCreation() {
-		int packSize = playerNumber * 8, maxValue = playerNumber * 2, denomination = 1;
 		
-		// Generating and storing values of the cards in the packs 
-		for(int i = 0; i < maxValue; i++) {
-			for(int j = 0; j < 4; j++) {
-				cardValues.add(denomination);
-			}
-			denomination +=1;
-		}
-		
-		// Making sure that the size of the pack is 8n 
-		if(packSize == cardValues.size()) {
-			Collections.shuffle(cardValues);
-			for(int i = 0; i < cardValues.size(); i++) {
-				System.out.println(cardValues.get(i)); 
-			}
-		}
-		return cardValues;
-	}
-	
-	private static void storingPack(ArrayList<Integer> pack) {
-		
-		// Creating the file to store the pack
-		try {
-			File packFile = new File(packLocation);
-			if(packFile.createNewFile()) {
-				System.out.printf("%n%s %s", "Pack was successfully stored in:", packLocation);
-			} else {
-				System.out.printf("%n%s%n", "File already exists; overwriting pack file");
-			}
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		
-		try {
-			FileWriter fWriter = new FileWriter(packLocation);
-			for(int i = 0; i < pack.size(); i++) {
-				String value = Integer.toString(pack.get(i));
-				fWriter.write(value);
-				if(i != pack.size() - 1) {
-					fWriter.write('\n');
-				}
-			}
-			
-			fWriter.close();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-	}
-	
-	
 	public static void playerCreation() {
 		for(int i = 1; i <= CardGame.getPlayerNumber(); i++) {
 			playerList.add(new Player(i));
@@ -169,7 +185,7 @@ public class CardGame {
 		}
 	}
 	
-	public static void distributeCards()
+	private static void distributeCards()
 	{
 		if(cardValues.size() != 0) {
 			// distribute cards to players
@@ -201,7 +217,6 @@ public class CardGame {
 				if(pFile.createNewFile()) {
 					playerFiles.add(pFile.getName());
 				} else {
-					System.out.printf("%s%n","File already exists. Contents being overwritten.");
 					playerFiles.add(pFile.getName());
 				}
 				
@@ -209,7 +224,6 @@ public class CardGame {
 				if(dFile.createNewFile()) {
 					deckFiles.add(dFile.getName());
 				} else {
-					System.out.printf("%s%n", "File already exists. Contents being overwritten.");
 					deckFiles.add(dFile.getName());
 				}
 			} catch(IOException e) {
@@ -246,10 +260,8 @@ public class CardGame {
 		// take user input for the number of players and the location of the pack
 		setup();
 		
-		// Generates a valid pack for the players to use and then creates the file location for the pack to be stored in
-		storingPack(packCreation());
 		
-		// Create a folder for output files
+		// create a folder for output files
 		OutputWriting.makeFolder();
 		
 		// creation of players and decks
@@ -263,7 +275,7 @@ public class CardGame {
 		playerDeckAssignment();
 		
 		
-		// Creating player files and adding initial hands
+		// creating player files and adding initial hands
 		createFiles();
 		
 		 for(int i = 0; i < playerFiles.size(); i++) {
@@ -278,7 +290,7 @@ public class CardGame {
 		  startGame();
 		  
 		  
-		  // Iterate through the list of deck filenames and output the final decks to the files 
+		  // iterate through the list of deck filenames and output the final decks to the files 
 		  for(int i = 0; i < deckFiles.size(); i++) {
 			 	OutputWriting.writingToDeckFile(deckFiles.get(i), deckList.get(i), i);
 			 }

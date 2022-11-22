@@ -1,0 +1,14 @@
+Initial Player #2, Hand [ 8 2 6 6 ]
+
+Player 2 picked up Card #8 from Deck 2
+Player 2 dropped Card #8 to Deck 3
+Player 2 current hand:  [ 2 6 6 8 ]
+
+Player 2 picked up Card #2 from Deck 2
+Player 2 dropped Card #8 to Deck 3
+Player 2 current hand:  [ 2 6 6 2 ]
+
+Player 2 has been informed Player 3 won.
+Final hand: Player #2, Hand [ 2 6 6 2 ]
+Player 2 exits.
+
