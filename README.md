@@ -1,6 +1,6 @@
 # cardgamez
 
-Multi-threaded card game simulator
+Multi-threaded card game simulator written in Java for university coursework.
 
 
 To run:
