@@ -1,6 +1,5 @@
-# cardgamez
-
-Multi-threaded card game simulator written in Java for university coursework.
+# Multi-threaded card game simulator
+Written in Java by Ruslan Prigarin and Malik Besta for university coursework.
 
 
 To run:
@@ -10,4 +9,3 @@ To run:
 2) Navigate to the folder
 
 3) Run "java -jar cards.jar" to execute the program
-
